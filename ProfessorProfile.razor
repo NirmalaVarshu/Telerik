@@ -1,0 +1,57 @@
+﻿@page "/Professor"
+@inject IProfessorRepository professorrepository
+@inject NavigationManager navigationmanager
+
+
+<div class="d-block">
+    <NavLink class="btn btn-primary px-3 mt-3 mb-2 me-auto "  type="submit"  @onclick="AddPro">
+        Add new Profile
+    </NavLink>
+</div>
+    <TelerikGrid Class="d-block" Data="@professor" FilterMode="@GridFilterMode.FilterMenu" Sortable="true"
+             OnUpdate="@Update"  OnDelete="@Delete" EditMode="@GridEditMode.Inline">
+    <GridColumns>
+        <GridColumn Field="@nameof(ProfessorModel.ProfessorName)" Title="Professor Name"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.ProfessorID)"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.Department)"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.Age)" Title="AGE"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.YOE)" Title="Years of experience"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.ProfessorEmail)" Title="Mail ID"></GridColumn>
+        <GridColumn Field="@nameof(ProfessorModel.ProfessorPhone)" Title="Mobile Number"></GridColumn>
+        <GridCommandColumn Width="200px" Resizable="false">
+            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true" ThemeColor="@ThemeConstants.Button.ThemeColor.Success">Update</GridCommandButton>
+            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">Edit</GridCommandButton>
+            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash" ThemeColor="@ThemeConstants.Button.ThemeColor.Error">Delete</GridCommandButton>
+        </GridCommandColumn>
+    </GridColumns>
+    </TelerikGrid>
+
+@code {
+    private IEnumerable<ProfessorModel> professor { get; set; } = new List<ProfessorModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await  Task.Run(load);
+    }
+    private void load()
+    {
+        professor = professorrepository.GetAll();
+    }
+    public void Update(GridCommandEventArgs args)
+    {
+        ProfessorModel professorModel = args.Item as ProfessorModel;
+
+        int a = professorrepository.Update(professorModel);
+    }
+    public void Delete(GridCommandEventArgs args)
+    {
+        ProfessorModel professorModel = args.Item as ProfessorModel;
+        int id = professorModel.Id;
+        professorrepository.Delete(id);
+        navigationmanager.NavigateTo("/Professor", forceLoad: true);
+    }
+    public void AddPro()
+    {
+       navigationmanager.NavigateTo("/AddProfessor", true);
+    }
+}

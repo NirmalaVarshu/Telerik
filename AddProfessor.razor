@@ -1,0 +1,50 @@
+﻿@page "/AddProfessor"
+@inject IProfessorRepository professorrepository
+@inject NavigationManager nav
+
+@if(!isloading){
+<div class="card w-75 p-5  rounded-4 mt-1 w-75  d-inline-block ">
+    <div class="d-flex justify-content-between">
+        <span class="h4">Add Professor Profile</span>
+            <NavLink class="text-primary text-decoration-underline h6" href="/Professor">
+                Back
+            </NavLink>
+    </div>
+    <TelerikForm Model="@professor" OnValidSubmit="Add">
+        <FormValidation>
+            <DataAnnotationsValidator />
+        </FormValidation>
+        <FormItems>
+            <FormItem Field="@nameof(professor.ProfessorName)" LabelText="Professor Name"></FormItem>
+            <FormItem Field="@nameof(professor.ProfessorID)" LabelText="Professor ID"></FormItem>
+            <FormItem Field="@nameof(professor.Department)" LabelText="Deparment"></FormItem>
+            <FormItem Field="@nameof(professor.Age)" LabelText="Age"></FormItem>
+            <FormItem Field="@nameof(professor.YOE)" LabelText="Years of experience"></FormItem>
+            <FormItem Field="@nameof(professor.ProfessorEmail)" LabelText="E-mail ID"></FormItem>
+            <FormItem Field="@nameof(professor.ProfessorPhone)" LabelText="Mobile Number"></FormItem>
+        </FormItems>
+    </TelerikForm>
+</div>
+}else
+{
+<div class="text-center">
+    <img src="/images/spingif.gif" style="width:100px">
+</div>
+}
+
+
+@code {
+    private ProfessorModel professor { get; set; } =new ProfessorModel();
+    public bool isloading { get; set; } = false;
+    public async Task Add()
+    {
+        isloading = true;
+        await Task.Delay(1000);
+        await Task.Run(Create);
+    }
+    private void Create()
+    {
+        professorrepository.Create(professor);
+        nav.NavigateTo("/Professor", true);
+    }
+}

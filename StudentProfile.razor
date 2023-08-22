@@ -1,0 +1,51 @@
+﻿@page "/"
+@inject IStudentRepository studentRepository
+@inject NavigationManager navigationmanager
+        <TelerikGrid Data="@Student"   FilterMode="@GridFilterMode.FilterMenu" Sortable="true"
+                          OnUpdate="@Update" OnDelete="@Delete"  EditMode="@GridEditMode.Inline" >
+            <GridColumns>
+            <GridColumn Field="@nameof(StudentModel.StudentName)" Title="Student Name" ></GridColumn>
+            <GridColumn Field="@nameof(StudentModel.StudentID)"  ></GridColumn>
+            <GridColumn Field="@nameof(StudentModel.Department)"></GridColumn>
+        <GridColumn Field="@nameof(StudentModel.Cgpa)" Title="CGPA"></GridColumn>
+            <GridColumn Field="@nameof(StudentModel.StudentEmail)" Title="Mail ID"></GridColumn>
+            <GridColumn Field="@nameof(StudentModel.StudentPhone)" Title="Mobile Number"></GridColumn>
+            
+        <GridCommandColumn Width="200px" Resizable="false">
+            <GridCommandButton Command="Save" Icon="@FontIcon.Save" ShowInEdit="true" ThemeColor="@ThemeConstants.Button.ThemeColor.Success">Update</GridCommandButton>
+            <GridCommandButton Command="Edit" Icon="@FontIcon.Pencil" ThemeColor="@ThemeConstants.Button.ThemeColor.Primary">Edit</GridCommandButton>
+            <GridCommandButton Command="Delete" Icon="@FontIcon.Trash" ThemeColor="@ThemeConstants.Button.ThemeColor.Error">Delete</GridCommandButton>
+        </GridCommandColumn>
+        </GridColumns>
+    </TelerikGrid>
+ 
+    
+  
+
+@code {
+    private IEnumerable<StudentModel> Student { get; set; } = new List<StudentModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Run(load);
+    }
+    private void load()
+    {
+        Student = studentRepository.GetAll();
+    }
+    public void Update(GridCommandEventArgs args)
+    {
+        StudentModel currItem = args.Item as StudentModel;
+
+        int a =  studentRepository.Update(currItem);   
+    }
+    public void Delete(GridCommandEventArgs args)
+    {
+        StudentModel currItem = args.Item as StudentModel;
+        int id = currItem.Id;
+        studentRepository.Delete(id);
+        navigationmanager.NavigateTo("/",forceLoad:true);
+    }
+
+   
+}

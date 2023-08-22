@@ -1,0 +1,69 @@
+﻿@page "/Admin"
+@inject IAdminRepository adminrepository
+@inject NavigationManager navigationmanager
+@if (!isloading)
+{
+    <div class="container  mt-4">
+        <div class="card-login bg-white mx-auto  my-auto p-5 shadow " style="width:400px">
+            <div class="text-center">
+                <img src="/images/admin.png" style="width:120px" class="rounded" />
+            </div>
+            <h6 class="text-center mt-2 text-primary fw-bold " style="font-weight:400">ADMIN PANEL</h6>
+            <EditForm Model="@administator" OnInvalidSubmit="@login"  >
+               <DataAnnotationsValidator></DataAnnotationsValidator>
+                <div class="form-group mt-4">
+                    <label class="fw-bold ">
+                        User ID
+                    </label>
+                    <TelerikTextBox   class="form-control border-dark " @bind-Value="administator.UserName"  />
+                    <ValidationMessage For="@(()=>administator.UserName)"></ValidationMessage>
+                </div>
+                <div class="form-group mt-4">
+                    <label class="fw-bold ">
+                        Password
+                    </label>
+                        <TelerikTextBox Password="true" class="border-dark" @bind-Value="administator.Password" />
+                        <ValidationMessage For="@(()=>administator.Password)"></ValidationMessage>
+                </div>
+                @if (value == 1)
+                {
+                    <div class="alert alert-danger mt-2 ">
+                       Invalid User Creditinals
+                    </div>
+                 }
+                <NavLink class="btn btn-primary mt-3 w-100" type="submit" value="Login" @onclick="login">
+                    Login
+                </NavLink>
+            </EditForm>
+        </div>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <img src="/images/spingif.gif" style="width:100px">
+    </div>
+}
+@code{
+    public Administator administator { get; set; } = new Administator();
+    public bool isloading { get; set; } = false;
+    int value;
+    public async Task login()
+    {
+        await Task.Delay(1000);
+        await Task.Run(loginTask);
+    }
+    private void loginTask()
+    {
+       int a = adminrepository.login(administator);
+        if(a == 1)
+        {
+            isloading = true;
+            navigationmanager.NavigateTo("/Professor",true);
+        }
+        else
+        {
+            value = 1;
+        }
+    }
+}

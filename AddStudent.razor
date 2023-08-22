@@ -1,0 +1,29 @@
+﻿@page "/Add"
+@inject IStudentRepository studentRepository
+@inject NavigationManager nav
+
+<div class="card w-75 p-5  rounded-4 mt-1 w-75  d-inline-block ">
+    <h4 class="head">Add Student Profile</h4>
+    <TelerikForm Model="@Student"    OnValidSubmit="Add">
+        <FormValidation>
+            <DataAnnotationsValidator />
+        </FormValidation>
+        <FormItems  >
+            <FormItem Field="@nameof(Student.StudentName)" LabelText="Student Name" ></FormItem>
+            <FormItem Field="@nameof(Student.StudentID)" LabelText="Student ID"></FormItem>
+            <FormItem Field="@nameof(Student.Department)" LabelText="Deparment" ></FormItem>
+            <FormItem Field="@nameof(Student.Cgpa)" LabelText="CGPA" ></FormItem>
+            <FormItem Field="@nameof(Student.StudentEmail)" LabelText="E-mail ID"></FormItem>
+            <FormItem Field="@nameof(Student.StudentPhone)" LabelText="Mobile Number"></FormItem>
+        </FormItems>
+    </TelerikForm>
+</div>
+
+@code {
+    private StudentModel Student { get; set; } = new StudentModel();
+    public void Add()
+    {
+        studentRepository.Create(Student);
+        nav.NavigateTo("/Add",true);
+    }
+}
